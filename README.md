@@ -19,7 +19,7 @@ Feita sob medida para engenheiros de radiofrequência, radioamadores e entusiast
 
 ## 📸 Interface do Usuário
 
-![Smith Chart Tool Interface Principal](SmithChartMain.jpg)
+![Smith Chart Tool Interface Principal](SmithChartMain.png)
 
 ---
 
