@@ -1,0 +1,25 @@
+
+
+
+smith_chart/
+├── CMakeLists.txt
+└── src/
+    ├── main.cpp
+    ├── types.h
+    ├── s1p_parser.h
+    ├── s1p_parser.cpp
+    ├── smith_chart_canvas.h
+    ├── smith_chart_canvas.cpp
+    ├── main_window.h
+    └── main_window.cpp
+    
+    
+sudo apt update
+sudo apt install build-essential cmake qt6-base-dev qt6-svg-dev
+
+
+mkdir -p build && cd build 
+cmake ..
+make -j2
+
+./smith_chart_pro

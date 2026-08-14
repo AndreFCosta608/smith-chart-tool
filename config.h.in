@@ -1,0 +1,2 @@
+#define smith_chart_VERSION_MAJOR @smith_chart_VERSION_MAJOR@
+#define smith_chart_VERSION_MINOR @smith_chart_VERSION_MINOR@
