@@ -1,0 +1,12 @@
+
+
+	Aviso aos navegantes.
+
+	Sobre este nosso utilitário para o cálculo rápido de casamento de impedâncias… 
+	Tenha em mente de que se trata de um app experimental.
+	Pois apesar de trabalhar a um certo tempo com engenharia e automação, o tema de rádio frequência é relativamente novo para mim e ainda não tenho muita experiência sobre o assunto.
+	Então podem sim ocorrer erros de interpretações teóricas, além dos já tradicionais erros de programação.
+	Se detectar algum erro de programação ou mesmo erro teórico, por favor, entre em contato para que eu tenha a oportunidade de melhorar esta ferramenta e aprender um pouco durante o processo..
+
+	No mais, espero que este app seja útil. Tanto para o aprendiz quanto para o técnico experiente que deseja uma ferramenta simples, leve e rápida.
+	

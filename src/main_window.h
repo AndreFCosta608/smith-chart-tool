@@ -7,9 +7,11 @@
 #include <QListWidget>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
+#include <QComboBox>
 #include <QLabel>
 #include "smith_chart_canvas.h"
 #include "types.h"
+#include "ai_engine.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -23,6 +25,7 @@ private slots:
     void addElement(ElementType type);
     void removeSelectedElement();
     void synthesizeLNetwork();
+    void synthesizeWithAI(); // NOVO SLOT
     void loadS1PFile();
     void exportSVG();
     void exportPDF();
@@ -30,6 +33,7 @@ private slots:
 
 private:
     SmithChartCanvas* m_canvas;
+    AIEngine m_aiEngine; // Instância do motor de inferência
 
     QLineEdit* m_rInput;
     QLineEdit* m_xInput;
@@ -37,6 +41,9 @@ private:
 
     QListWidget* m_elementsList;
     std::vector<MatchingElement> m_elements;
+
+    QComboBox* m_aiModeCombo; // NOVO
+    QPushButton* m_btnRunAI;   // NOVO
 
     QCheckBox* m_chkZYGrid;
     QCheckBox* m_chkVSWR;

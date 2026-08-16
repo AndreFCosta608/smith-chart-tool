@@ -5,7 +5,10 @@
 #include <cmath>
 #include <numbers>
 
-bool S1PParser::loadFile(const QString& filePath, std::vector<S1PPoint>& outPoints, double z0) {
+bool S1PParser::loadFile(const QString& filePath, std::vector<S1PPoint>& outPoints, [[maybe_unused]] double z0) {
+    // z0 é aceito para compatibilidade de API, mas não é usado: zNorm já é
+    // calculado normalizado (Z0=1) a partir de gamma, e todo o resto do app
+    // (SmithChartCanvas, MatchingElement::apply) assume essa mesma convenção.
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
 

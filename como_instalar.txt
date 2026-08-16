@@ -1,0 +1,41 @@
+
+
+								=========	Como instalar este utilitário	=========
+
+
+	Para aqueles que preferem analisar todo o código fonte em busca de código malicioso, incluo em anexo todo o código fonte utilizado no projeto, desde o script em Python 3;10 de geração de dados para o treinamento dos modelos, como o próprio script de treinamento dos modelos de ia e lógico, todo o fonte em C++ do nosso utilitário. O próprio instalador é entregue na forma de script bash.
+
+	Já para os que desejam usar uma ferramenta leve e prática, criei um diretório chamado de “dist”, que contém o programa já compilado, modelos de redes já treinados com 600 mil amostras e o script que é o instalador.
+
+
+			dist/
+			├── install_smith_chart.sh
+			├── uninstall_smith_chart.sh
+			├── smith_chart_pro
+			├── surrogate_model.onnx
+			├── surrogate_model.onnx.data      <- se existir (copiado automaticamente)
+			├── multitask_model.onnx
+			├── multitask_model.onnx.data      <- se existir
+			├── ppo_policy_model.onnx
+			└── smith_chart_pro.png            <- opcional
+
+
+	Para instalar o nosso utilitário de casamento de impedâncias usando os Gráficos de Smith, clone este repositório em algum local do seu sistema de arquivos e dentro do dir “dist/” rode o script de instalação:
+
+
+		chmod +x install_smith_chart.sh
+
+		sudo ./install_smith_chart.sh
+
+
+	O script fará o download e instalação das bibliotecas base que dão suporte ao formato ONNX, assim como copiar o executável e pesos de modelos de ia para o seu computador e então criar o link para ser chamado de forma gráfica no seu SO.
+	* Importante, o utilitário necessita do suporte ao microsoft/onnxruntime para poder rodar os modelos de IA, logo o script fará a instalação do mesmo.
+
+	O utilitário foi testado em uma máquina Xubuntu 24, rodando XFCE.
+
+	Se precisar remover o utilitário sem deixar lixo para trás (vai remover também o suporte ao ONNX instalado pelo script anterior), rode:
+	
+	
+		chmod +x uninstall_smith_chart.sh
+
+		sudo ./uninstall_smith_chart.sh

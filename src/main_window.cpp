@@ -12,14 +12,14 @@
 #include <cmath>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
-    setWindowTitle("Smith Chart Tool - RF Matching Studio (Linux)");
-    resize(1150, 750);
+    setWindowTitle("Smith Chart Tool - RF Matching Studio (IA Edition)");
+    resize(1200, 800);
 
     setStyleSheet("QMainWindow { background-color: #11111b; }"
                   "QGroupBox { color: #89b4fa; font-weight: bold; border: 1px solid #45475a; border-radius: 6px; margin-top: 10px; padding-top: 10px; }"
                   "QGroupBox::title { subcontrol-origin: margin; left: 10px; padding: 0 5px; }"
                   "QLabel { color: #cdd6f4; font-size: 12px; }"
-                  "QLineEdit, QDoubleSpinBox { background-color: #313244; color: #cdd6f4; padding: 5px; border-radius: 4px; border: 1px solid #45475a; }"
+                  "QLineEdit, QDoubleSpinBox, QComboBox { background-color: #313244; color: #cdd6f4; padding: 5px; border-radius: 4px; border: 1px solid #45475a; }"
                   "QPushButton { background-color: #313244; color: #cdd6f4; font-weight: bold; padding: 6px; border-radius: 4px; border: 1px solid #45475a; }"
                   "QPushButton:hover { background-color: #45475a; color: #89b4fa; }"
                   "QListWidget { background-color: #1e1e2e; color: #a6e3a1; border: 1px solid #45475a; border-radius: 4px; }"
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     QWidget* sidebar = new QWidget(this);
     QVBoxLayout* sideLayout = new QVBoxLayout(sidebar);
 
-    // 1. Carga
+    // 1. Carga Z_L
     QGroupBox* grpLoad = new QGroupBox("1. Carga Z_L e Frequência", this);
     QFormLayout* fLoad = new QFormLayout(grpLoad);
 
@@ -54,8 +54,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(m_xInput, &QLineEdit::textChanged, this, &MainWindow::updateLoadImpedance);
     connect(m_freqSpin, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::updateFrequency);
 
-    // 2. Componentes
-    QGroupBox* grpElements = new QGroupBox("2. Rede de Casamento", this);
+    // 2. Componentes Manuais & Síntese Clássica
+    QGroupBox* grpElements = new QGroupBox("2. Edição da Rede", this);
     QVBoxLayout* vElements = new QVBoxLayout(grpElements);
 
     QHBoxLayout* btnGrid = new QHBoxLayout();
@@ -75,13 +75,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     QHBoxLayout* elemActions = new QHBoxLayout();
     QPushButton* btnRemove = new QPushButton("Remover", this);
-    QPushButton* btnAutoL = new QPushButton("Síntese Rede L Auto", this);
+    QPushButton* btnAutoL = new QPushButton("Síntese Exata L", this);
     btnAutoL->setStyleSheet("background-color: #89b4fa; color: #11111b; font-weight: bold;");
 
     elemActions->addWidget(btnRemove);
     elemActions->addWidget(btnAutoL);
     vElements->addLayout(elemActions);
-
     sideLayout->addWidget(grpElements);
 
     connect(btnAddLS, &QPushButton::clicked, [this](){ addElement(ElementType::SeriesL); });
@@ -91,15 +90,33 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(btnRemove, &QPushButton::clicked, this, &MainWindow::removeSelectedElement);
     connect(btnAutoL, &QPushButton::clicked, this, &MainWindow::synthesizeLNetwork);
 
-    // 3. Visualização
-    QGroupBox* grpOverlay = new QGroupBox("3. Visualização / Camadas", this);
+    // 3. SEÇÃO NOVA: IA (ONNX Runtime)
+    QGroupBox* grpAI = new QGroupBox("3. Síntese Inteligente (IA)", this);
+    QVBoxLayout* vAI = new QVBoxLayout(grpAI);
+
+    m_aiModeCombo = new QComboBox(this);
+    m_aiModeCombo->addItem("Modelo A: Surrogate (Ultrarrápido)", static_cast<int>(AIMode::FastSurrogate));
+    m_aiModeCombo->addItem("Modelo C: Catálogo E24 (Multi-Task)", static_cast<int>(AIMode::MultiTaskCatalog));
+    m_aiModeCombo->addItem("Modelo B: Deep RL (Agente PPO)", static_cast<int>(AIMode::DeepRLSynthesis));
+
+    m_btnRunAI = new QPushButton("⚡ Sintetizar com IA", this);
+    m_btnRunAI->setStyleSheet("background-color: #a6e3a1; color: #11111b; font-weight: bold; font-size: 13px;");
+
+    vAI->addWidget(m_aiModeCombo);
+    vAI->addWidget(m_btnRunAI);
+    sideLayout->addWidget(grpAI);
+
+    connect(m_btnRunAI, &QPushButton::clicked, this, &MainWindow::synthesizeWithAI);
+
+    // 4. Camadas e Visualização
+    QGroupBox* grpOverlay = new QGroupBox("4. Camadas / Visualização", this);
     QVBoxLayout* vOverlay = new QVBoxLayout(grpOverlay);
 
-    m_chkZYGrid = new QCheckBox("Mostrar Grade Z-Y Combinada", this);
+    m_chkZYGrid = new QCheckBox("Mostrar Grade Z-Y", this);
     m_chkZYGrid->setChecked(true);
 
     QHBoxLayout* hVSWR = new QHBoxLayout();
-    m_chkVSWR = new QCheckBox("Círculo VSWR:", this);
+    m_chkVSWR = new QCheckBox("VSWR:", this);
     m_chkVSWR->setChecked(true);
     m_vswrSpin = new QDoubleSpinBox(this);
     m_vswrSpin->setRange(1.01, 10.0);
@@ -107,7 +124,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     hVSWR->addWidget(m_chkVSWR); hVSWR->addWidget(m_vswrSpin);
 
     QHBoxLayout* hQ = new QHBoxLayout();
-    m_chkQ = new QCheckBox("Curvas Q Constante:", this);
+    m_chkQ = new QCheckBox("Q:", this);
     m_chkQ->setChecked(true);
     m_qSpin = new QDoubleSpinBox(this);
     m_qSpin->setRange(0.1, 50.0);
@@ -125,9 +142,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     connect(m_chkQ, &QCheckBox::toggled, this, &MainWindow::updateToggles);
     connect(m_qSpin, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::updateToggles);
 
-    // 4. Arquivos
+    // 5. Exportação e Arquivos
     QHBoxLayout* hFiles = new QHBoxLayout();
-    QPushButton* btnS1P = new QPushButton("Abrir NanoVNA (.s1p)", this);
+    QPushButton* btnS1P = new QPushButton("NanoVNA (.s1p)", this);
     QPushButton* btnSVG = new QPushButton("SVG", this);
     QPushButton* btnPDF = new QPushButton("PDF", this);
 
@@ -149,6 +166,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
     updateLoadImpedance();
     updateFrequency();
+    updateToggles();
 }
 
 void MainWindow::updateLoadImpedance() {
@@ -243,7 +261,42 @@ void MainWindow::synthesizeLNetwork() {
     }
 
     refreshElementsList();
-    QMessageBox::information(this, "Síntese", "Rede de Casamento em L calculada e aplicada!");
+}
+
+// IMPLEMENTAÇÃO DO SLOT DA IA
+void MainWindow::synthesizeWithAI() {
+    bool okR, okX;
+    double r = m_rInput->text().toDouble(&okR);
+    double x = m_xInput->text().toDouble(&okX);
+    double freqHz = m_freqSpin->value() * 1e6;
+
+    if (!okR || !okX || r <= 0) {
+        QMessageBox::warning(this, "Erro", "Impedância de carga Z_L inválida.");
+        return;
+    }
+
+    AIMode selectedMode = static_cast<AIMode>(m_aiModeCombo->currentData().toInt());
+
+    // BUGFIX: os campos m_rInput/m_xInput guardam valores normalizados de
+    // Smith Chart (Z0 = 50), enquanto o AIEngine (e os modelos .onnx, treinados
+    // em synthetic_data_generator.py) esperam R/X em ohms REAIS
+    // (R ∈ [5,300] Ω, X ∈ [-300,300] Ω). Sem esta conversão, a rede recebia
+    // valores ~150x menores que o esperado (ex.: r=0.5 -> 0.5 Ω em vez de 25 Ω),
+    // extrapolando totalmente fora da distribuição de treino.
+    const double Z0 = 50.0;
+    double rOhms = r * Z0;
+    double xOhms = x * Z0;
+
+    // Executa a inferência usando o ONNX Runtime C++
+    std::vector<MatchingElement> aiElements = m_aiEngine.runInference(selectedMode, freqHz, rOhms, xOhms);
+
+    if (aiElements.empty()) {
+        QMessageBox::critical(this, "Erro de Inferência", "Certifique-se de que os arquivos .onnx estão no diretório da aplicação.");
+        return;
+    }
+
+    m_elements = aiElements;
+    refreshElementsList();
 }
 
 void MainWindow::loadS1PFile() {

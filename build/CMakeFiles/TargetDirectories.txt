@@ -1,5 +1,0 @@
-/home/pi/Deposito/Projetos/Meus/SmithChart/build/CMakeFiles/smith_chart_pro.dir
-/home/pi/Deposito/Projetos/Meus/SmithChart/build/CMakeFiles/edit_cache.dir
-/home/pi/Deposito/Projetos/Meus/SmithChart/build/CMakeFiles/rebuild_cache.dir
-/home/pi/Deposito/Projetos/Meus/SmithChart/build/CMakeFiles/smith_chart_pro_autogen_timestamp_deps.dir
-/home/pi/Deposito/Projetos/Meus/SmithChart/build/CMakeFiles/smith_chart_pro_autogen.dir

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <clipPath id="chartClip">
+      <circle cx="128" cy="128" r="96"/>
+    </clipPath>
+  </defs>
+
+  <!-- Fundo com cantos arredondados, mesmo tom do QMainWindow (#11111b) -->
+  <rect x="0" y="0" width="256" height="256" rx="44" fill="#11111b"/>
+
+  <!-- Círculo externo do Smith Chart -->
+  <circle cx="128" cy="128" r="96" fill="none" stroke="#89b4fa" stroke-width="5"/>
+
+  <!-- Eixo real -->
+  <line x1="32" y1="128" x2="224" y2="128" stroke="#89b4fa" stroke-width="2.5" opacity="0.8"/>
+
+  <!-- Grade de resistência constante (r = 0.5, 1.0, 2.0) -->
+  <g clip-path="url(#chartClip)" stroke="#45475a" stroke-width="1.6" fill="none">
+    <circle cx="160" cy="128" r="64"/>
+    <circle cx="176" cy="128" r="48"/>
+    <circle cx="197.3" cy="128" r="32"/>
+  </g>
+
+  <!-- Grade de reatância constante (x = ±1.0, ±2.0) -->
+  <g clip-path="url(#chartClip)" stroke="#45475a" stroke-width="1.6" fill="none">
+    <circle cx="224" cy="32" r="96"/>
+    <circle cx="224" cy="224" r="96"/>
+    <circle cx="224" cy="80" r="48"/>
+    <circle cx="224" cy="176" r="48"/>
+  </g>
+
+  <!-- Trajetória de casamento de impedância (mesmo estilo da UI) -->
+  <path d="M 68 168 L 118 100 L 168 128" fill="none" stroke="#a6e3a1" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Ponto de partida (carga Z_L) -->
+  <circle cx="68" cy="168" r="9" fill="#f9e2af"/>
+
+  <!-- Ponto intermediário -->
+  <circle cx="118" cy="100" r="7" fill="#89b4fa"/>
+
+  <!-- Ponto final (casado, 50 ohms) -->
+  <circle cx="168" cy="128" r="11" fill="#a6e3a1"/>
+
+  <!-- Marca central (50 ohms) -->
+  <g stroke="#f38ba8" stroke-width="4" stroke-linecap="round">
+    <line x1="122" y1="122" x2="134" y2="134"/>
+    <line x1="122" y1="134" x2="134" y2="122"/>
+  </g>
+</svg>

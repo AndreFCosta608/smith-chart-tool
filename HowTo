@@ -1,6 +1,4 @@
 
-
-
 smith_chart/
 ├── CMakeLists.txt
 └── src/
@@ -11,11 +9,22 @@ smith_chart/
     ├── smith_chart_canvas.h
     ├── smith_chart_canvas.cpp
     ├── main_window.h
-    └── main_window.cpp
-    
-    
+    ├── main_window.cpp
+    ├── ai_engine.cpp
+    └── ai_engine.h
+
+cd ~/Downloads
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.29.0/onnxruntime-linux-x64-1.29.0.tgz
+tar -xzf onnxruntime-linux-x64-1.29.0.tgz
+cd onnxruntime-linux-x64-1.29.0
+sudo cp -r include/* /usr/local/include/
+sudo cp -r lib/* /usr/local/lib/
+sudo ldconfig
+
+
 sudo apt update
 sudo apt install build-essential cmake qt6-base-dev qt6-svg-dev
+sudo apt install libonnxruntime-dev
 
 
 mkdir -p build && cd build 
@@ -23,3 +32,30 @@ cmake ..
 make -j2
 
 ./smith_chart_pro
+
+
+
+				  ┌─────────────────────────────────────────────────────────┐
+                  │              Entrada do Usuário no C++/Qt6              │
+                  │ (Frequência f, R_load, X_load, Tolerância e Parasitas)  │
+                  └────────────────────────────┬────────────────────────────┘
+                                               │
+               ┌───────────────────────────────┼───────────────────────────────┐
+               ▼                               ▼                               ▼
+    ┌────────────────────┐          ┌────────────────────┐          ┌────────────────────┐
+    │     MODO RAPIDO    │          │    MODO PRECISO    │          │    MODO AVANÇADO   │
+    │  Modelo A: Hybrid  │          │ Modelo C: Multi-   │          │ Modelo B: Deep RL  │
+    │   Surrogate MLP    │          │  Task Classifier   │          │  (Sintetizador PPO)│
+    ├────────────────────┤          ├────────────────────┤          ├────────────────────┤
+    │• Custo CPU: Ultra- │          │• Custo CPU: Baixo/ │          │• Custo CPU: Alto   │
+    │  baixo (<1ms)      │          │  Médio (~2-5ms)    │          │  (~20-50ms)        │
+    │• Saída: L/C Ideais │          │• Saída: Componentes│          │• Saída: Topologia  │
+    │  + Busca Direta    │          │  E24/E96 diretos   │          │  Custom em Etapas  │
+    └────────────────────┘          └────────────────────┘          └────────────────────┘
+
+
+source /home/pi/Deposito/Projetos/venv310/bin/activate
+
+python synthetic_data_generator.py
+
+python train_models.py
